@@ -5,11 +5,11 @@ const router = Router();
 
 router.post('/', [authMiddleware, posts_controller.create]);
 router.put('/:id', [authMiddleware, posts_controller.update]);
-router.delete('/:id', posts_controller.remove);
-router.put('/:id/like', posts_controller.like);
-router.get('/:id', posts_controller.getOne);
-router.get('/profile/:username', posts_controller.getProfile);
-router.get('/timeline/:userId', posts_controller.getTimeline);
+router.delete('/:id', [authMiddleware, posts_controller.remove]);
+router.put('/:id/like', [authMiddleware, posts_controller.like]);
+router.get('/:id', [authMiddleware, posts_controller.getOne]);
+router.get('/profile/:username', [authMiddleware, posts_controller.getProfile]);
+router.get('/timeline/:userId', [authMiddleware, posts_controller.getTimeline]);
 /*
 router.get('/', (req, res) => {
 
