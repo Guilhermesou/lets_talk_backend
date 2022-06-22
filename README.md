@@ -1,6 +1,6 @@
-# lets_talk_backend
-Let'sTalk is a prototype of simple social network build with nodejs API CRUD for studies purpose.
+# Let'sTalk Backend
 
+Let'sTalk is a prototype of simple social network build with nodejs API CRUD for studies purpose.
 
 # How to run?
 
