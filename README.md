@@ -22,6 +22,8 @@ Let'sTalk is a prototype of simple social network build with nodejs API CRUD for
     
 # Routes
 
+  To use all the routes a token has to be provided. The token is obteined in the login route.
+  
   ## Authentication routes and logout
   
    * `api/auth/login`
