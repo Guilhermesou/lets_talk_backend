@@ -1,9 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 
-async function add(req, res) {
-    return req;
-}
 
 async function remove (req, res) {
     try {

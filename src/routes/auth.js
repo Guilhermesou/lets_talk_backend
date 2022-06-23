@@ -1,19 +1,9 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
-
 import User from '../models/User.js';
-import jwt from "jsonwebtoken";
 
+import tokensController from '../controllers/tokensController.js'
 const router = Router();
-
-function generateToken(params = {}) {
-    return jwt.sign(
-        { params },
-        process.env.SECRET,
-        { expiresIn: 400 }
-    );
-}
-
 
 router.post('/register', async (req, res) => {
     try {
@@ -42,13 +32,23 @@ router.post('/login', async (req, res) => {
 
         const validPassword = await bcrypt.compare(password, user.password);
         !validPassword && res.status(400).send('Wrong password');
-        const token = generateToken({ id: user._id });
+        const token = tokensController.generateToken({ id: user._id });
         user.password = undefined;
         res.status(200).send({user, token});
     } catch (error) {
         res.status(500).send(error.message);
     }
 
+})
+
+router.post('/logout', async (req, res) => {
+    try {
+        const token = req.token;
+        await tokensController.expiresTokenJWT(token);
+        res.status(204).send();
+    } catch (error) {
+        res.status(400).send("An error has been ocurried")
+    }
 })
 
 export default router;

@@ -1,6 +1,6 @@
 import redis from "redis";
 import { createHash } from "crypto";
-const blocklist = redis.createClient({prefix: 'blocklist-acess=token:'});
+const blocklist = redis.createClient({prefix: 'blocklist-acess-token:'});
 
 const expiration = process.env.JWTTOKENEXPIRESIN;
 
