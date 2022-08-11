@@ -51,6 +51,5 @@ Let'sTalk is a prototype of simple social network build with nodejs API CRUD for
 # To do
 
 - [x] Implement acess token
-- [ ] Implement refresh token
-- [ ] To some refactoring in the code
-- [ ] Resolve some bugs
+- [X] Implement refresh token
+- [X] Resolve some bugs
