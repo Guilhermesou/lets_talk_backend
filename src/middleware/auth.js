@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
+import tokens from "../controllers/tokensController.js";
 
-export default function header(req, res, next) {
+
+export default async function header(req, res, next) {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -9,6 +11,7 @@ export default function header(req, res, next) {
 
     const parts = authHeader.split(' ');
 
+    console.log(authHeader);
     if (!parts.length === 2) {
         return res.status(401).send({error: 'Token error'});
     }
@@ -19,11 +22,13 @@ export default function header(req, res, next) {
         return res.status(401).send({ error: 'Token malformatted' });
     }
 
-    jwt.verify(token, process.env.SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(401).send({error: 'Token invalid'})
-        }
+    try {
+        const decoded = await tokens.access.check(token, process.env.SECRET);
         req.userId = decoded.id;
+        req.token = token;
         return  next();
-    })
+    } catch (error) {
+        return res.status(401).send({error: 'Token invalid'})
+    }
+        
 }
