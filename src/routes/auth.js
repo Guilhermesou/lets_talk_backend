@@ -1,8 +1,9 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import User from '../models/User.js';
-
+import auth from "../middleware/auth.js";
 import tokensController from '../controllers/tokensController.js'
+import refresh from "../middleware/refreshToken.js";
 const router = Router();
 
 router.post('/register', async (req, res) => {
@@ -28,27 +29,36 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email: email });
-        !user && res.status(404).send('User not found');
-
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
         const validPassword = await bcrypt.compare(password, user.password);
-        !validPassword && res.status(400).send('Wrong password');
-        const token = tokensController.generateToken({ id: user._id });
+        if (!validPassword) {
+            return res.status(400).send('Wrong password');
+        }
+        const token = await tokensController.access.create({ id: user._id });
         user.password = undefined;
-        res.status(200).send({user, token});
+        res.set("Authorization", token);
+        res.status(200).send({ user, token });
     } catch (error) {
+        console.log(error)
         res.status(500).send(error.message);
     }
 
 })
 
-router.post('/logout', async (req, res) => {
+router.post('/logout', [auth], async (req, res) => {
     try {
         const token = req.token;
-        await tokensController.expiresTokenJWT(token);
+        await tokensController.access.expires(token);
         res.status(204).send();
     } catch (error) {
+        console.log(error)
         res.status(400).send("An error has been ocurried")
     }
 })
+
+
+router.post('/refresh_token', [refresh]);
 
 export default router;
