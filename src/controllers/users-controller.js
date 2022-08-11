@@ -1,6 +1,15 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 
+async function getUserById (id) {
+    try {
+        const user = await User.findById(userId);
+        return user;
+        
+    } catch (error) {
+        return error
+    }
+}
 
 async function remove (req, res) {
     try {
@@ -108,4 +117,4 @@ async function unfollow (req, res) {
     }
 }
 
-export default { remove, update, follow, unfollow, getAll }
+export default { remove, update, follow, unfollow, getUserById }
