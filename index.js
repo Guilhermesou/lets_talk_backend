@@ -1,5 +1,4 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -36,5 +35,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/posts', postRoute);
 
 app.listen(port, () => {
-    console.log(`Server is running in http://localhost:${port}`);
+    console.log("#----------------------| Let's Talk Backend |-------------------#");
+    console.log(`#  Server is running in http://localhost:${port}                #`);
+    
 });
