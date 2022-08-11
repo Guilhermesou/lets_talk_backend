@@ -1,8 +1,9 @@
 import redis from "redis";
 import { createHash } from "crypto";
-const blocklist = redis.createClient({prefix: 'blocklist-acess-token:'});
+import jwt from "jsonwebtoken";
+const blocklist = redis.createClient({prefix: 'blocklist-acess-token:', url: "redis://default:redispw@localhost:49153"});
+await blocklist.connect();
 
-const expiration = process.env.JWTTOKENEXPIRESIN;
 
 function generateHashToken(token) {
     return createHash('sha256').update(token).digest('hex');
@@ -10,7 +11,7 @@ function generateHashToken(token) {
 
 async function addTokenInRedis(key, value, expirationDate) {
     await blocklist.set(key, value);
-    blocklist.expireAt(expirationDate);
+    blocklist.expireAt(key, expirationDate);
 }
 
 async function checkTokenInRedis(key) {
@@ -20,8 +21,9 @@ async function checkTokenInRedis(key) {
 
 
 async function add(token) {
-    const hashToken = generateHashToken(token, expiration);
-    await addTokenInRedis(hashToken, '');
+    const expirationDate = jwt.decode(token).exp;
+    const hashToken = generateHashToken(token);
+    await addTokenInRedis(hashToken, '', expirationDate);
 }
 
 async function checkToken(token) {
